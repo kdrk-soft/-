@@ -4,27 +4,49 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView number;
-    private EditText password;
+    private TextView tvNumber;
+    private EditText etPassword;
     private ArrayList<String> arrayPassword = new ArrayList<>();
+    private Button btList;
+    private Boolean aBoolean = false;
+    private Animation anim;
+    final static String textViewTexKey = "TEXTVIEW_TEXT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+    }
 
+    //сохранение textview при смене ориентации
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(textViewTexKey, tvNumber.getText().toString());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        String textViewText = savedInstanceState.getString(textViewTexKey);
+        tvNumber.setText(textViewText);
     }
 
     public void init() {
-        number = findViewById(R.id.textView);
-        password = findViewById(R.id.editText);
+        tvNumber = findViewById(R.id.textView);
+        etPassword = findViewById(R.id.editText);
+        btList = findViewById(R.id.button2);
+        anim = AnimationUtils.loadAnimation(this, R.anim.my);
     }
 
     public void passwordGener() {
@@ -40,18 +62,44 @@ public class MainActivity extends AppCompatActivity {
             arrayPassword.add(pass.toString());
 
         }
-        for (int a = 0; a < arrayPassword.size()-1; a++) {
-            password.append(arrayPassword.get(a) + "\n");
-            number.append((a+1)+".     " +"\n");
+        for (int a = 0; a < arrayPassword.size() - 1; a++) {
+            etPassword.append(arrayPassword.get(a) + "\n");
+            tvNumber.append((a + 1) + ".     " + "\n");
         }
-        password.append(arrayPassword.get(9));
-        number.append((10)+".     ");
+        etPassword.append(arrayPassword.get(9));
+        tvNumber.append((10) + ".     ");
     }
 
     public void onClickGenerate(View view) {
         arrayPassword.clear();
-        password.setText("");
-        number.setText("");
+        etPassword.setText("");
+        tvNumber.setText("");
         passwordGener();
+
+        btList.setText(R.string.hide);
+        btList.setBackgroundResource(R.color.bt);
+        tvNumber.setVisibility(View.VISIBLE);
+        etPassword.setVisibility(View.VISIBLE);
+        aBoolean=false;
+    }
+
+    public void onClickList(View view) {
+
+        if (aBoolean == false) {
+            btList.setText(R.string.show);
+            tvNumber.startAnimation(anim);
+            etPassword.startAnimation(anim);
+
+            tvNumber.setVisibility(View.INVISIBLE);
+            etPassword.setVisibility(View.INVISIBLE);
+            aBoolean=true;
+        }
+        else {
+            btList.setText(R.string.hide);
+
+            tvNumber.setVisibility(View.VISIBLE);
+            etPassword.setVisibility(View.VISIBLE);
+            aBoolean=false;
+        }
     }
 }

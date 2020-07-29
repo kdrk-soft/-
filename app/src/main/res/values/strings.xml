@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Password Generator</string>
     <string name="generate">Сгенерировать пароли</string>
+    <string name="hide">скрыть список</string>
+    <string name="show">показать список</string>
 </resources>
